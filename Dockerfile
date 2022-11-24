@@ -6,7 +6,7 @@ ADD . /srv/www
 
 WORKDIR /srv/www
 
-RUN npm install --unsafe-perm
+RUN yarn
 
 EXPOSE 3000
 
