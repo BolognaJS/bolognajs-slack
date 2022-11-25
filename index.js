@@ -8,8 +8,8 @@ const config = {
   interval: process.env.SLACK_INTERVAL || 5000,
   path: "/",
 
-  token: hostenv.TOKEN || process.env.TOKEN || 3000,
-  org: hostenv.ORG || process.env.ORG || 3000,
+  token: hostenv.TOKEN || process.env.TOKEN,
+  org: hostenv.ORG || process.env.ORG,
   emails: "",
   gcaptcha_secret: "111",
   gcaptcha_sitekey: "111",
