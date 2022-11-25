@@ -55,9 +55,6 @@
     },
     "scripts": {
         "test": "mocha && eslint lib/**",
-        "postinstall": "gulp",
-        "build": "gulp",
-        "start:bin": "chmod +x bin/slackin && ./bin/slackin",
         "start": "node ./index.js"
     },
     "now": {

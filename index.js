@@ -15,8 +15,6 @@ const config = {
   gcaptcha_sitekey: "111",
 };
 
-console.log(config);
-
 slackin(config).listen(config.port, config.hostname, function (err) {
   if (err) throw err;
   //   if (!flags.silent)

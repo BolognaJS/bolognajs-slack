@@ -1,13 +1,37 @@
-FROM node:slim
+FROM debian:bullseye as builder
 
-ENV PORT 3000
+ARG NODE_VERSION=16.13.0
+ARG YARN_VERSION=latest
 
-ADD . /srv/www
+RUN apt-get update; apt install -y curl
+RUN curl https://get.volta.sh | bash
+ENV VOLTA_HOME /root/.volta
+ENV PATH /root/.volta/bin:$PATH
+RUN volta install node@${NODE_VERSION} yarn@${YARN_VERSION}
 
-WORKDIR /srv/www
+#######################################################################
 
-RUN yarn
+RUN mkdir /app
+WORKDIR /app
 
-EXPOSE 3000
+# Yarn will not install any package listed in "devDependencies" when NODE_ENV is set to "production"
+# to install all modules: "yarn install --production=false"
+# Ref: https://classic.yarnpkg.com/lang/en/docs/cli/install/#toc-yarn-install-production-true-false
 
-CMD ./bin/slackin --coc "$SLACK_COC" --channels "$SLACK_CHANNELS" --port $PORT $SLACK_SUBDOMAIN $SLACK_API_TOKEN $GOOGLE_CAPTCHA_SECRET $GOOGLE_CAPTCHA_SITEKEY
+ENV NODE_ENV production
+
+COPY . .
+
+RUN yarn install
+FROM debian:bullseye
+
+LABEL fly_launch_runtime="nodejs"
+
+COPY --from=builder /root/.volta /root/.volta
+COPY --from=builder /app /app
+
+WORKDIR /app
+ENV NODE_ENV production
+ENV PATH /root/.volta/bin:$PATH
+
+CMD [ "yarn", "run", "start" ]
